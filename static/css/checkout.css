@@ -1,0 +1,111 @@
+/* General Styling */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    color: #212529;
+}
+
+/* Section Banner */
+.sec-banner {
+    background-color: #e3f2fd;
+    padding: 80px 20px 50px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.section-title h3 {
+    color: #007bff;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Cart Items */
+.list-group-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.list-group-item b {
+    color: #007bff;
+}
+
+.badge-primary {
+    background-color: #007bff;
+    font-size: 14px;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+    background-color: #e9ecef;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.breadcrumb-item.active {
+    font-weight: bold;
+}
+
+/* Form Styling */
+form .form-group label {
+    font-weight: bold;
+    color: #495057;
+}
+
+form .form-control {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: none;
+    transition: all 0.3s ease-in-out;
+}
+
+form .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+form button {
+    background-color: #28a745;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease-in-out;
+}
+
+form button:hover {
+    background-color: #218838;
+}
+
+/* Alert Styling */
+.alert {
+    font-size: 16px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+.alert-dismissible .btn-close {
+    font-size: 16px;
+    color: #495057;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sec-banner {
+        padding: 50px 10px;
+    }
+
+    .section-title h3 {
+        font-size: 24px;
+    }
+
+    form .form-control {
+        font-size: 14px;
+    }
+
+    form button {
+        font-size: 14px;
+    }
+}
