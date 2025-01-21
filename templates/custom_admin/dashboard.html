@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Manage Products</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            margin-bottom: 20px;
+        }
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            width: 250px;
+            background-color: #343a40;
+            color: white;
+        }
+        .sidebar a {
+            color: white;
+            padding: 15px;
+            display: block;
+            text-decoration: none;
+        }
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+        .content {
+            margin-left: 260px;
+            padding: 20px;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h4 class="text-center py-3">Admin Dashboard</h4>
+        <a href="{% url 'custom_admin:custom_admin_dashboard' %}">Dashboard</a>
+        <a href="{% url 'custom_admin:manage_users' %}">Manage Users</a>
+        <a href="{% url 'custom_admin:manage_products' %}">Manage Products</a>
+        <a href="{% url 'custom_admin:add_product' %}">Add Product</a>
+        <a href="{% url 'custom_admin:manage_orders' %}">Manage Orders</a>
+        <a href="{% url 'custom_admin:slider_dashboard' %}">Manage Sliders</a>
+
+        {% comment %} <a href="{% url 'custom_admin:logout' %}">Logout</a> {% endcomment %}
+    </div>
+
+    <div class="content">
+        <div class="container-fluid">
+            <h1 class="mb-4">Welcome to the Admin Dashboard</h1>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card text-white bg-primary" >
+                        <div class="card-body">
+                            <h5 class="card-title" >Total Users</h5>
+                            <p class="card-text">{{ total_users }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-white bg-success">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Products</h5>
+                            <p class="card-text">{{ total_products }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-white bg-info">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Orders</h5>
+                            <p class="card-text">450</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% comment %} <div class="card">
+                <div class="card-header">
+                    Recent Activities
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item">User John Doe added a new product.</li>
+                        <li class="list-group-item">Order #10234 was shipped.</li>
+                        <li class="list-group-item">New user Jane Smith registered.</li>
+                    </ul>
+                </div>
+            </div> {% endcomment %}
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

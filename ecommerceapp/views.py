@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
-from ecommerceapp.models import Contact,Product,OrderUpdate,Orders
+from ecommerceapp.models import Contact,Product,OrderUpdate,Orders, Slider, Cart
 from django.contrib import messages
 from math import ceil
 # from ecommerceapp import keys
@@ -10,25 +10,34 @@ import json
 from django.views.decorators.csrf import  csrf_exempt
 # from PayTm import Checksum
 from django.http import JsonResponse
-# Create your views here.
+from django.shortcuts import render, redirect, get_object_or_404
  
 # @login_required
-def index(request):
+from math import ceil
 
+def index(request):
     allProds = []
-    catprods = Product.objects.values('category','id')
-    print(catprods)
+    catprods = Product.objects.values('category', 'id')
     cats = {item['category'] for item in catprods}
     for cat in cats:
-        prod= Product.objects.filter(category=cat)
-        n=len(prod)
+        prod = Product.objects.filter(category=cat)
+        n = len(prod)
         nSlides = n // 4 + ceil((n / 4) - (n // 4))
         allProds.append([prod, range(1, nSlides), nSlides])
 
-    params= {'allProds':allProds}
+    # Prepare both product data and slider data for the template
+    params = {
+        'allProds': allProds,
+        'sliders': Slider.objects.all()  # Include slider data
+    }
 
-    return render(request,"index.html",params)
+    # Pass a single combined dictionary to the render function
+    return render(request, "index.html", params)
 
+
+def product_detail(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    return render(request, 'product_detail.html', {'product': product})
 
 
 def contact(request):
@@ -52,6 +61,44 @@ def about(request):
 
 def get_product(request):
     return render(request,"products/product.html")
+
+
+import json
+
+@login_required
+def sync_cart(request):
+    if request.method == 'POST':
+        cart_data = json.loads(request.POST.get('cart_data'))
+        
+        # Clear existing cart items for this user
+        Cart.objects.filter(user=request.user).delete()
+        
+        # Add items from localStorage to database
+        for product_id, item_data in cart_data.items():
+            try:
+                product = Product.objects.get(id=product_id)
+                Cart.objects.create(
+                    user=request.user,
+                    product=product,
+                    quantity=item_data['qty']
+                )
+            except Product.DoesNotExist:
+                continue
+                
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error'})
+
+@login_required
+def view_cart(request):
+    cart_items = Cart.objects.filter(user=request.user)
+    total = sum(item.get_total() for item in cart_items)
+    
+    context = {
+        'cart_items': cart_items,
+        'total': total
+    }
+    return render(request, 'cart.html', context)
+
 
 
 
@@ -78,24 +125,7 @@ def checkout(request):
         update = OrderUpdate(order_id=Order.order_id,update_desc="the order has been placed")
         update.save()
         thank = True
-# # PAYMENT INTEGRATION
 
-        # id = Order.order_id
-        # oid=str(id)+"ShopyCart"
-        # param_dict = {
-
-        #     'MID':keys.MID,
-        #     'ORDER_ID': oid,
-        #     'TXN_AMOUNT': str(amount),
-        #     'CUST_ID': email,
-        #     'INDUSTRY_TYPE_ID': 'Retail',
-        #     'WEBSITE': 'WEBSTAGING',
-        #     'CHANNEL_ID': 'WEB',
-        #     'CALLBACK_URL': 'http://127.0.0.1:8000/handlerequest/',
-
-        # }
-        # param_dict['CHECKSUMHASH'] = Checksum.generate_checksum(param_dict, MERCHANT_KEY)
-        # return render(request, 'paytm.html', {'param_dict': param_dict})
 
     return render(request, 'checkout.html')
 

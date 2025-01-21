@@ -8,5 +8,7 @@ urlpatterns = [
     path('about', views.about , name="about"),
     path('checkout/', views.checkout , name="checkout"),
     path('proceed-to-pay/', views.razorpaycheck ),
-    path('products/', views.get_product, name="product_details"),
+    path('product/<int:product_id>/', views.product_detail, name='product_detail'),
+
+    
 ]

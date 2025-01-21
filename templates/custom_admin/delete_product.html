@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delete Product</title>
+</head>
+<body>
+    <h2>Are you sure you want to delete {{ product.product_name }}?</h2>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+        <a href="{% url 'custom_admin:custom_admin_dashboard' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</body>
+</html>

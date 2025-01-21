@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slider Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .actions a {
+            margin-right: 10px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .actions a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Slider Management</h1>
+        <a href="{% url 'custom_admin:add_slider' %}" class="button">Add New Slider</a>
+        <table>
+            <tr>
+                <th>Title</th>
+                <th>Image</th>
+                <th>Order</th>
+                <th>Actions</th>
+            </tr>
+            {% for slider in sliders %}
+            <tr>
+                <td>{{ slider.title }}</td>
+                <td><img src="{{ slider.image.url }}" alt="{{ slider.title }}" width="100"></td>
+                <td>{{ slider.order }}</td>
+                <td class="actions">
+                    <a href="{% url 'custom_admin:edit_slider' slider.pk %}">Edit</a>
+                    <a href="{% url 'custom_admin:delete_slider' slider.pk %}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>
+

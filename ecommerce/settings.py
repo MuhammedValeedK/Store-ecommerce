@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'ecommerceapp',
     'accounts',
     'debug_toolbar',
+    'custom_admin',
+     
 ]
 
 MIDDLEWARE = [
@@ -57,7 +59,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     
+
 ]
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 ROOT_URLCONF = 'ecommerce.urls'
 
@@ -108,6 +113,11 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+
+
+
+
 
 
 # Internationalization

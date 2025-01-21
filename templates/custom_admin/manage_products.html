@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Manage Products</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .navbar {
+            margin-bottom: 20px;
+        }
+        table {
+            margin-top: 20px;
+        }
+        .form-container {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{% url 'custom_admin:custom_admin_dashboard' %}">Admin Dashboard</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'custom_admin:manage_users' %}">Manage Users</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'custom_admin:manage_products' %}">Manage Products</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'custom_admin:manage_orders' %}">Manage Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'custom_admin:add_product' %}">Add Product</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="mb-4">Manage Products</h1>
+
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>{{ product.id }}</td>
+                    <td>{{ product.product_name }}</td>
+                    <td>{{ product.price }}</td>
+                    <td>
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.product_name }}" style="width: 100px; height: auto;">
+                        {% else %}
+                        <span>No Image</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a class="btn btn-primary btn-sm" href="{% url 'custom_admin:edit_product' product.id %}">Edit</a>
+                        <a class="btn btn-danger btn-sm" href="{% url 'custom_admin:delete_product' product.id %}">Delete</a>
+                        
+                    </td> 
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% comment %} <div class="form-container">
+            <h2>Add/Edit Product</h2>
+            <form method="post" action="{% url 'custom_admin:manage_products' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price:</label>
+                    <input type="number" class="form-control" id="price" name="price" step="0.01" required>
+                </div>
+                <button type="submit" class="btn btn-success">Save</button>
+            </form>
+        </div> {% endcomment %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

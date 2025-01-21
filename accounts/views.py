@@ -8,76 +8,24 @@ from .utils import TokenGenerator,generate_token
 from django.utils.encoding import force_bytes, force_str, DjangoUnicodeDecodeError
 from django.core.mail import EmailMessage
 from django.conf import settings
-
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.auth import authenticate,login,logout
+
 # Create your views here.
 
 
-
-# def signup_view(request):
-#     if request.method == "POST":
-#         email = request.POST['email']
-#         password = request.POST['pass1']
-#         confirm_password = request.POST['pass2']
-
-#         if password != confirm_password:
-#             messages.warning(request, "Password doesn’t match.")
-#             return render(request, 'accounts/signup.html')
-
-#         try:
-#             if User.objects.get(username=email):
-#                 messages.info(request, "Email exists already")
-#                 return render(request, 'accounts/signup.html')
-#         except User.DoesNotExist:
-#             pass  # User with this email doesn't exist, proceed with creating a new user
-
-#         user = User.objects.create_user(email, email, password)
-#         user.is_active = False 
-        
-#         user.save()
-
-#         email_subject = "Activate Your Account"
-#         message = render_to_string('accounts/activate.html', {
-#             'user': user,
-#             'domain': '127.0.0.1:8000', 
-#             'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-#             'token': generate_token.make_token(user)
-#         })
-
-#         # Uncomment and configure email sending logic when ready
-#         email_message = EmailMessage(email_subject, message, settings.EMAIL_HOST_USER, [email])
-#         email_message.send()
-
-#         messages.success(request, f"Activate Your Account by clicking the link in your gmail")
-#         return redirect('/accounts/login/')
-
-#     return render(request, "accounts/signup.html")
-
-# # class ActivateAccountView(View):
-#     def get(self,request,uidb64,token):
-#         try:
-#             uid=force_str(urlsafe_base64_decode(uidb64))
-#             user=User.objects.get(pk=uid)
-#         except Exception as identifier:
-#             user=None
-#         if user is not None and generate_token.check_token(user,token):
-#             user.is_active=True
-#             user.save()
-#             messages.info(request,"Account Activated Successfully")
-#             return redirect('/accounts/login')
-#         return render(request,'/accounts/activatefail.html')
 
 
 from django.contrib.sites.shortcuts import get_current_site
 def signup_view(request):
     if request.method == "POST":
+        username = request.POST.get('username', '').strip()  # Collect username
         email = request.POST.get('email', '').strip()
         password = request.POST.get('pass1', '')
         confirm_password = request.POST.get('pass2', '')
 
         # Basic validation
-        if not email or not password or not confirm_password:
+        if not username or not email or not password or not confirm_password:
             messages.warning(request, "Please fill all the required fields.")
             return render(request, 'accounts/signup.html')
 
@@ -85,7 +33,11 @@ def signup_view(request):
             messages.warning(request, "Passwords don't match.")
             return render(request, 'accounts/signup.html')
 
-        # Check if user exists
+        # Check if username or email already exists
+        if User.objects.filter(username=username).exists():
+            messages.warning(request, "Username is already taken.")
+            return render(request, 'accounts/signup.html')
+
         if User.objects.filter(email=email).exists():
             messages.warning(request, "An account with this email already exists.")
             return render(request, 'accounts/signup.html')
@@ -93,7 +45,7 @@ def signup_view(request):
         try:
             # Create user
             user = User.objects.create_user(
-                username=email,
+                username=username,
                 email=email,
                 password=password
             )
@@ -148,28 +100,44 @@ class ActivateAccountView(View):
             return redirect('login')
         else:
             messages.error(request, "Activation link is invalid or has expired!")
-            return redirect('signup')  # Assuming 'signup' is your URL name
-
+            return redirect('signup') 
 
 
 
 def login_view(request):
-    if request.method=="POST":
+    if request.method == "POST":
+        identifier = request.POST.get('email', '').strip()  # Accepts username or email
+        userpassword = request.POST.get('pass1', '').strip()
 
-        username=request.POST['email']
-        userpassword=request.POST['pass1']
-        myuser=authenticate(username=username,password=userpassword)
-
-        if myuser is not None:
-            login(request,myuser)
-            messages.success(request,"Login Success")
-            return redirect('/')
-
-        else:
-            messages.error(request,"Invalid Credentials")
+        # Check if the identifier is an email or username
+        try:
+            if '@' in identifier:
+                user = User.objects.get(email=identifier)
+                username = user.username
+            else:
+                username = identifier
+        except User.DoesNotExist:
+            messages.error(request, "Invalid credentials. User not found.")
             return redirect('/accounts/login')
 
-    return render(request,'accounts/login.html')  
+        # Authenticate the user
+        myuser = authenticate(username=username, password=userpassword)
+
+        if myuser is not None:
+            login(request, myuser)
+            messages.success(request, "Login Successful")
+
+            # Redirect superuser to custom admin page
+            if myuser.is_superuser:
+                return redirect('/custom_admin/')  # Adjust the URL as needed
+
+            # Redirect regular users to homepage
+            return redirect('/')
+        else:
+            messages.error(request, "Invalid credentials. Please try again.")
+            return redirect('/accounts/login')
+
+    return render(request, 'accounts/login.html')
 
 
 
@@ -178,4 +146,5 @@ def logout_view(request):
     logout(request)
     messages.info(request, "You have been logged out")
     return redirect('/accounts/login')
+
 
