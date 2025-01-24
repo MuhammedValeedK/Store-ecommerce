@@ -11,7 +11,8 @@ from django.views.decorators.csrf import  csrf_exempt
 # from PayTm import Checksum
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
- 
+from django.views import View
+
 # @login_required
 from math import ceil
 
@@ -38,6 +39,13 @@ def index(request):
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     return render(request, 'product_detail.html', {'product': product})
+
+class category_view(View):
+    def get(self, request, val):
+        context = {'slug_value': val,}  # Example context to pass to the template
+        return render(request, "products/category.html", context)
+        
+
 
 
 def contact(request):

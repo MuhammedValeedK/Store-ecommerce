@@ -43,8 +43,11 @@ INSTALLED_APPS = [
     'accounts',
     'debug_toolbar',
     'custom_admin',
+    'crispy_forms',
+    'crispy_bootstrap4',
      
 ]
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
     
@@ -114,6 +117,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+INTERNAL_IPS = [
+    # ...existing IPs...
+    '127.0.0.1',
+]
 
 
 

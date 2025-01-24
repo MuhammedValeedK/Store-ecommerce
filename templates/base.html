@@ -61,12 +61,14 @@
         				{% endfor %}
 					</div>
 
-					<div class="right-top-bar flex-w h-full">
+					
+						
+					<div class="right-top-bar flex-w h-full">	
 						{% if request.user.is_authenticated %}
-						<span class="mr-2 text-white">{{ user.username }}</span> 
-						<a href="/accounts/logout/" class="flex-c-m trans-04 p-lr-25">
-							Logout
-						</a>
+						<a href="/accounts/logout/" class="flex-c-m trans-04 p-lr-25">Logout</a>
+						<a href="/accounts/profile/" class="flex-c-m trans-04 p-lr-25">My Profile</a>
+
+
 						{% else %}
 
 						<a href="/accounts/signup/" class="flex-c-m trans-04 p-lr-25">
@@ -75,11 +77,11 @@
 						<a href="/accounts/login/" class="flex-c-m trans-04 p-lr-25">
 							Login
 						</a>
-
+					</div>
 						{% endif %}
 
 
-					</div>
+					
 				</div>
 			</div>
 
@@ -314,8 +316,12 @@
 		
 {% block body %}
  
-
-
+		<!-- Banner -->
+		<div class="sec-banner bg0 p-t-80 p-b-50">
+			<div class="container">
+				{% block content %}{% endblock content %}
+		    </div>
+		</div>
 
 {% endblock body %}
 
@@ -634,6 +640,9 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 		</div>
 	</div>
 
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <!--===============================================================================================-->	
 	<script src="{% static '/vendor/jquery/jquery-3.2.1.min.js' %}"></script>
 <!--===============================================================================================-->

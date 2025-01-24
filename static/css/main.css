@@ -3330,3 +3330,29 @@ input.num-product::-webkit-inner-spin-button {
   }
 
 }
+
+.dropdown-menu {
+  background-color: #f8f9fa; /* Light background */
+  border: 1px solid #dee2e6; /* Subtle border */
+  border-radius: 5px; /* Rounded corners */
+}
+
+.dropdown-item {
+  color: #212529; /* Dark text */
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #007bff; /* Primary color on hover */
+  color: #fff; /* White text */
+}
+
+.btn-primary {
+  background-color: #007bff; /* Primary button color */
+  border-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3; /* Darker primary on hover */
+  border-color: #004085;
+}

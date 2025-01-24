@@ -10,13 +10,14 @@ from django.core.mail import EmailMessage
 from django.conf import settings
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.auth import authenticate,login,logout
-
+from django.contrib.auth.decorators import login_required
+from django.contrib.sites.shortcuts import get_current_site
+from .models import UserProfile
 # Create your views here.
 
 
 
 
-from django.contrib.sites.shortcuts import get_current_site
 def signup_view(request):
     if request.method == "POST":
         username = request.POST.get('username', '').strip()  # Collect username
@@ -124,6 +125,7 @@ def login_view(request):
         myuser = authenticate(username=username, password=userpassword)
 
         if myuser is not None:
+            UserProfile.objects.get_or_create(user=myuser)
             login(request, myuser)
             messages.success(request, "Login Successful")
 
@@ -148,3 +150,26 @@ def logout_view(request):
     return redirect('/accounts/login')
 
 
+from .forms import UserUpdateForm, ProfileUpdateForm
+
+@login_required
+def profile(request):
+    if request.method == 'POST':
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        profile_form = ProfileUpdateForm(request.POST, request.FILES, 
+                                       instance=request.user.userprofile)
+        
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'Your profile has been updated successfully!')
+            return redirect('profile')
+    else:
+        user_form = UserUpdateForm(instance=request.user)
+        profile_form = ProfileUpdateForm(instance=request.user.userprofile)
+
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form
+    }
+    return render(request, 'users/profile.html', context)
