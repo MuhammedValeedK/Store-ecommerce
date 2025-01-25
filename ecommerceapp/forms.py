@@ -4,7 +4,7 @@ from .models import Product, Slider
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['product_name', 'price', 'category', 'subcategory', 'desc', 'image'] 
+        fields = '__all__' 
 
 
 

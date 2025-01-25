@@ -187,7 +187,11 @@ def add_product(request):
         messages.success(request, "Product added successfully!")
         return redirect('custom_admin:manage_products')
 
-    return render(request, 'custom_admin/add_product.html')
+    # Pass CATEGORY_CHOICES to the template
+    context = {
+        'category_choices': Product.CATEGORY_CHOICES,
+    }
+    return render(request, 'custom_admin/add_product.html', context)
 
 
 from ecommerceapp.models import Slider

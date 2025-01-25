@@ -12,6 +12,10 @@ from django.views.decorators.csrf import  csrf_exempt
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
+from itertools import count
+
+
+
 
 # @login_required
 from math import ceil
@@ -42,9 +46,16 @@ def product_detail(request, product_id):
 
 class category_view(View):
     def get(self, request, val):
-        context = {'slug_value': val,}  # Example context to pass to the template
-        return render(request, "products/category.html", context)
+        # Filter products by the given category slug
+        products = Product.objects.filter(category=val)
         
+        # Context to pass data to the template
+        context = {
+            'products': products,  # Pass the filtered products
+            'slug_value': val,     # Category slug to display in the heading
+        }
+        return render(request, "products/category.html", context)
+
 
 
 
@@ -70,72 +81,155 @@ def about(request):
 def get_product(request):
     return render(request,"products/product.html")
 
+def product_list(request):
+    # Fetch products (replace this with your actual logic)
+    products = Product.objects.all()
 
-import json
+    # Calculate the cart count for the current user
+    if request.user.is_authenticated:
+        cart_count = Cart.objects.filter(user=request.user).count()
+    else:
+        cart_count = 0
 
-@login_required
-def sync_cart(request):
-    if request.method == 'POST':
-        cart_data = json.loads(request.POST.get('cart_data'))
-        
-        # Clear existing cart items for this user
-        Cart.objects.filter(user=request.user).delete()
-        
-        # Add items from localStorage to database
-        for product_id, item_data in cart_data.items():
-            try:
-                product = Product.objects.get(id=product_id)
-                Cart.objects.create(
-                    user=request.user,
-                    product=product,
-                    quantity=item_data['qty']
-                )
-            except Product.DoesNotExist:
-                continue
-                
-        return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'error'})
+    context = {
+        'products': products,
+        'cart_count': cart_count,  # Pass the cart count to the template
+    }
+    return render(request, 'products/product_list.html', context)
+
+
 
 @login_required
+def add_to_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    cart_item, created = Cart.objects.get_or_create(
+        user=request.user,
+        product=product,
+        defaults={'quantity': 1}
+    )
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
+    return redirect('product_list')
+
+
+
 def view_cart(request):
+    if not request.user.is_authenticated:
+        messages.warning(request, "Login & Try Again")
+        return redirect('/accounts/login')
+
     cart_items = Cart.objects.filter(user=request.user)
-    total = sum(item.get_total() for item in cart_items)
+    total_amount = sum(item.product.price * item.quantity for item in cart_items)
     
+    # Calculate the total price for each item and the overall total
+    for item in cart_items:
+        item.total_price = item.product.price * item.quantity  # Add a total_price attribute to each item
+
+    total_price = sum(item.total_price for item in cart_items)  # Calculate the overall total
+    
+    # Calculate the cart count
+    cart_count = cart_items.count()
+
     context = {
         'cart_items': cart_items,
-        'total': total
-    }
-    return render(request, 'cart.html', context)
+        'total_amount': total_amount,
+        'cart_count': cart_count,  # Pass the cart count to the template
+        }
+    return render(request, 'products/cart.html', context)
 
 
+
+def clear_cart(request):
+        # Fetch all cart items for the current user
+    cart_items = Cart.objects.filter(user=request.user)
+        # Delete all cart items
+    cart_items.delete()
+        # Add a success message
+    messages.success(request, "Your cart has been cleared.")
+        # Redirect to the cart page
+    return redirect('view_cart')
+
+
+
+def remove_from_cart(request, item_id):
+    # Fetch the cart item
+    cart_item = get_object_or_404(Cart, id=item_id, user=request.user)
+        # Delete the cart item
+    cart_item.delete()
+        # Add a success message
+    messages.success(request, "Item removed from your cart.")
+        # Redirect to the cart page
+    return redirect('view_cart')
+
+
+def update_cart(request, item_id):
+    if request.method == 'POST':
+        # Fetch the cart item
+        cart_item = get_object_or_404(Cart, id=item_id, user=request.user)
+                # Get the new quantity from the form
+        new_quantity = int(request.POST.get('quantity'))
+            # Update the quantity
+        if new_quantity > 0:
+            cart_item.quantity = new_quantity
+            cart_item.save()
+            messages.success(request, "Cart updated successfully.")
+        else:
+            cart_item.delete()
+            messages.success(request, "Item removed from your cart.")
+        # Redirect to the cart page
+    return redirect('view_cart')
 
 
 
 def checkout(request):
     if not request.user.is_authenticated:
-        messages.warning(request,"Login & Try Again")
+        messages.warning(request, "Login & Try Again")
         return redirect('/accounts/login')
 
-    if request.method=="POST":
+    cart_items = Cart.objects.filter(user=request.user)
+    total_amount = sum(item.product.price * item.quantity for item in cart_items)
+
+    if request.method == "POST":
         items_json = request.POST.get('itemsJson', '')
         name = request.POST.get('name', '')
-        amount = request.POST.get('amt')
         email = request.POST.get('email', '')
         address1 = request.POST.get('address1', '')
-        address2 = request.POST.get('address2','')
+        address2 = request.POST.get('address2', '')
         city = request.POST.get('city', '')
         state = request.POST.get('state', '')
         zip_code = request.POST.get('zip_code', '')
         phone = request.POST.get('phone', '')
-        Order = Orders(items_json=items_json,name=name,amount=amount, email=email, address1=address1,address2=address2,city=city,state=state,zip_code=zip_code,phone=phone)
-        print(amount)
-        Order.save()
-        update = OrderUpdate(order_id=Order.order_id,update_desc="the order has been placed")
+
+        order = Orders(
+            items_json=items_json,
+            name=name,
+            amount=total_amount,
+            email=email,
+            address1=address1,
+            address2=address2,
+            city=city,
+            state=state,
+            zip_code=zip_code,
+            phone=phone,
+            user=request.user
+        )
+        order.save()
+
+        update = OrderUpdate(order_id=order.id, update_desc="The order has been placed")
         update.save()
+
+        cart_items.delete()  # Clear the cart
         thank = True
+        return render(request, 'checkout.html', {'thank': thank, 'order': order})
+
+    context = {
+        'cart_items': cart_items,
+        'total_amount': total_amount,
+    }
+    return render(request, 'checkout.html', context)
 
 
-    return render(request, 'checkout.html')
 
 def razorpaycheck(request):
     cart = Product.objects.filter(user=request.user)

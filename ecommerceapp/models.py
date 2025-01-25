@@ -1,10 +1,6 @@
 from django.db import models
 from django.conf import settings
-
-
-
-
-
+from django.contrib.auth.models import User
 
 
 class Contact(models.Model):
@@ -17,11 +13,35 @@ class Contact(models.Model):
     def __int__(self):
         return self.id
 
+class Slider(models.Model):
+    title = models.CharField(max_length=100)  # Title text
+    subtitle = models.CharField(max_length=200, blank=True)  # Optional subtitle
+    image = models.ImageField(upload_to='sliders/')  # Image for the slider
+    button_text = models.CharField(max_length=50, blank=True)  # Button text
+    button_link = models.URLField(blank=True)  # Button URL
+    order = models.PositiveIntegerField(default=0)  # To control display order
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ['order']
+
+
+
+
 
 class Product(models.Model):
-    product_id = models.AutoField
+    CATEGORY_CHOICES = [
+        ('Athar', 'Athar'),
+        ('Spray', 'Spray'),
+        ('Oud', 'Oud'),
+        ('Body Spray', 'Body_Spray'),
+        ('others', 'Others'),
+    ]
+    
     product_name = models.CharField(max_length=100)
-    category = models.CharField(max_length=100, default="")
+    category = models.CharField(max_length=100, choices=CATEGORY_CHOICES, default="others")
     subcategory = models.CharField(max_length=50, default="")
     price = models.IntegerField(default=0)
     desc = models.CharField(max_length=300)
@@ -36,8 +56,8 @@ class Cart(models.Model):
     quantity = models.PositiveIntegerField(default=1)
     date_added = models.DateTimeField(auto_now_add=True)
 
-    def get_total(self):
-        return self.quantity * self.product.price
+    def __str__(self):
+        return f"{self.quantity} x {self.product.name} for {self.user.username}"
 
 
 
@@ -48,27 +68,20 @@ class Cart(models.Model):
 
 
 class Orders(models.Model):
-    PAYMENT_METHODS = (
-        ('COD', 'Cash On Delivery'),
-        ('ONLINE', 'Online Payment')
-    )
-    
-    order_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)  # Add this line
     items_json = models.CharField(max_length=5000)
     name = models.CharField(max_length=90)
-    amount = models.IntegerField(default=0)
+    amount = models.FloatField(default=0)
     email = models.CharField(max_length=111)
-    address1 = models.CharField(max_length=200)
-    address2 = models.CharField(max_length=200)
-    city = models.CharField(max_length=100)
-    state = models.CharField(max_length=100)
-    zip_code = models.CharField(max_length=100)
-    phone = models.CharField(max_length=100)
-    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHODS, default='COD')
-    payment_status = models.CharField(max_length=20, default='Pending')
-    order_date = models.DateTimeField(auto_now_add=True)
+    address1 = models.CharField(max_length=111)
+    address2 = models.CharField(max_length=111, blank=True, null=True)
+    city = models.CharField(max_length=111)
+    state = models.CharField(max_length=111)
+    zip_code = models.CharField(max_length=111)
+    phone = models.CharField(max_length=111, default="")
+
     def __str__(self):
-        return self.name
+        return f"Order {self.id} by {self.name}"
 
 
 class OrderUpdate(models.Model):
@@ -85,16 +98,4 @@ class OrderUpdate(models.Model):
 
 
 
-class Slider(models.Model):
-    title = models.CharField(max_length=100)  # Title text
-    subtitle = models.CharField(max_length=200, blank=True)  # Optional subtitle
-    image = models.ImageField(upload_to='sliders/')  # Image for the slider
-    button_text = models.CharField(max_length=50, blank=True)  # Button text
-    button_link = models.URLField(blank=True)  # Button URL
-    order = models.PositiveIntegerField(default=0)  # To control display order
 
-    def __str__(self):
-        return self.title
-
-    class Meta:
-        ordering = ['order']
