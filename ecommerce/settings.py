@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 from django.contrib import messages
-
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,12 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-mlun6=l(rcod5pph$$r&v7q%#07(_b3qcd=wj2x#=$oby=*$^&'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost').split(',')
 
 
 # Application definition
@@ -180,5 +180,6 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
-STRIPE_PUBLIC_KEY = "pk_test_51QmY5BR1qqfRgJOK9yYCYLoELCVDSx7fYwTxS00Qq0zuTZf2Fuq4iPjHCNDuF3pqYHH35lpUFJOgkGqzmApQzejA0062hOov3A"
-STRIPE_SECRET_KEY = "sk_test_51QmY5BR1qqfRgJOKAGPP28afn7NJbYI3WUSBDNZ25faJLfIULfSM4z8Ul4rh2mN46GcmfT4BbuakoHnDF0JjUxHw00KBrDIGFg"
+
+STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')

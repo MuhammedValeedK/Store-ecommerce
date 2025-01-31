@@ -1,0 +1,36 @@
+# Ignore environment variables
+.env
+
+# Ignore compiled Python files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore Django database files
+db.sqlite3
+*.sqlite3
+
+# Ignore logs
+*.log
+logs/
+*.log.*
+
+# Ignore media & static files (if stored locally)
+staticfiles/
+media/
+
+# Ignore IDE/editor files
+.vscode/
+.idea/
+*.swp
+
+# Ignore Virtual Environment (if using)
+venv/
+.env/
+.envrc
+
+# Ignore node_modules (if using frontend frameworks)
+node_modules/
+
+# Ignore Stripe test logs
+stripe_test_logs/
