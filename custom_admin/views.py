@@ -2,12 +2,17 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import get_user_model
-from ecommerceapp.models import Product
+from ecommerceapp.models import Product, Orders
 from ecommerceapp.models import Orders  
 from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404
 from django.views.decorators.cache import never_cache
 from ecommerceapp.forms import ProductForm
+from django.db.models import Q
+from django.shortcuts import get_object_or_404, redirect, render
+from django.http import HttpResponseNotFound
+from ecommerceapp.models import Category 
+from ecommerceapp.forms import CategoryForm
 
 
 @never_cache
@@ -17,34 +22,18 @@ def dashboard_view(request):
     User = get_user_model()
     total_users = User.objects.count()  # Total users
     total_products = Product.objects.count()  # Total products
-    # total_orders = Order.objects.count()  # Total orders
+    total_orders = Orders.objects.count()  # Total orders
     
     return render(request, 'custom_admin/dashboard.html', {
         'title': 'Admin Dashboard',
         'total_users': total_users,
         'total_products': total_products,
-        # 'total_orders': total_orders,
+        'total_orders': total_orders,
     })
 
 
-# @login_required
-# @staff_member_required
-# def manage_users_view(request):
-#     users = User.objects.all()
-#     return render(request, 'custom_admin/manage_users.html', {
-#         'users': users,
-#     })
 
 
-
-@never_cache
-@login_required
-@staff_member_required
-def manage_products_view(request):
-    products = Product.objects.all()
-    return render(request, 'custom_admin/manage_products.html', {
-        'products': products,
-    })
 
 
 
@@ -97,7 +86,13 @@ User = get_user_model()
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def list_users_view(request):
-    users = User.objects.all()
+    query = request.GET.get('q')
+    if query:
+        users = User.objects.filter(
+            Q(username__icontains=query) | Q(email__icontains=query)
+        )
+    else:
+        users = User.objects.all()
     return render(request, 'custom_admin/list_users.html', {'users': users})
 
 
@@ -141,19 +136,37 @@ def deactivate_user_view(request, user_id):
 
 
 
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def manage_products_view(request):
+    query = request.GET.get('q')
+    if query:
+        try:
+            # Try to convert the query to an integer for ID search
+            query_as_int = int(query)
+            products = Product.objects.filter(
+                Q(product_name__icontains=query) | Q(id=query_as_int)
+            )
+        except ValueError:
+            # If the query is not a valid integer, search only by product name
+            products = Product.objects.filter(product_name__icontains=query)
+    else:
+        products = Product.objects.all()
+
+    return render(request, 'custom_admin/manage_products.html', {'products': products})
+
 def edit_product(request, pk):
     product = get_object_or_404(Product, pk=pk)
     if request.method == 'POST':
         form = ProductForm(request.POST, instance=product)
         if form.is_valid():
             form.save()
-            return redirect('custom_admin:custom_admin_dashboard')  # Redirect to dashboard or product list
+            return redirect('custom_admin:manage_products')  # Redirect to dashboard or product list
     else:
         form = ProductForm(instance=product)
     return render(request, 'custom_admin/edit_product.html', {'form': form, 'product': product})
 
-from django.shortcuts import get_object_or_404, redirect, render
-from django.http import HttpResponseNotFound
+
 
 def delete_product(request, pk):
     try:
@@ -169,16 +182,25 @@ def delete_product(request, pk):
 
 def add_product(request):
     if request.method == "POST":
+        # Retrieve form data
         product_name = request.POST.get('product_name')
-        category = request.POST.get('category')
+        category_id = request.POST.get('category')  # Get the category ID from the form
         subcategory = request.POST.get('subcategory')
         price = request.POST.get('price')
         desc = request.POST.get('desc')
         image = request.FILES.get('image')
 
+        # Fetch the Category instance based on the category_id
+        try:
+            category = Category.objects.get(id=category_id)
+        except Category.DoesNotExist:
+            messages.error(request, "Invalid category selected.")
+            return redirect('custom_admin:add_product')
+
+        # Create the product
         Product.objects.create(
             product_name=product_name,
-            category=category,
+            category=category,  # Use the Category instance
             subcategory=subcategory,
             price=price,
             desc=desc,
@@ -187,9 +209,12 @@ def add_product(request):
         messages.success(request, "Product added successfully!")
         return redirect('custom_admin:manage_products')
 
-    # Pass CATEGORY_CHOICES to the template
+    # Fetch all categories from the Category model
+    categories = Category.objects.all()
+
+    # Pass categories to the template
     context = {
-        'category_choices': Product.CATEGORY_CHOICES,
+        'categories': categories,
     }
     return render(request, 'custom_admin/add_product.html', context)
 
@@ -232,3 +257,45 @@ def delete_slider(request, pk):
         return redirect('custom_admin:slider_dashboard')
 
     return render(request, 'custom_admin/delete_slider.html', {'slider': slider})
+
+
+
+
+
+def manage_categories(request):
+    categories = Category.objects.all()  # Fetch all categories from the database
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('custom_admin:manage_categories')  # Redirect to the same page after saving
+    else:
+        form = CategoryForm()
+    
+    return render(request, 'custom_admin/manage_categories.html', {'form': form, 'categories': categories})
+
+def edit_category(request, category_id):
+    category = Category.objects.get(id=category_id)
+    if request.method == 'POST':
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Category updated successfully!')
+            return redirect('custom_admin:manage_categories')
+    else:
+        form = CategoryForm(instance=category)
+    
+    context = {
+        'form': form,
+        'category': category,
+    }
+    return render(request, 'custom_admin/edit_category.html', context)
+
+def delete_category(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    
+    # Delete the category and its associated products
+    category.delete()
+    messages.success(request, "Category deleted successfully!")
+    
+    return redirect('custom_admin:manage_categories')

@@ -16,6 +16,7 @@ urlpatterns = [
     path('orders/', views.manage_orders_view, name='manage_orders'),
 
     # User Management
+    
     path('users/', views.list_users_view, name='manage_users'),         # List users
     path('users/create/', views.create_user_view, name='create_user'),  # Create user
     path('users/<int:user_id>/activate/', views.activate_user_view, name='activate_user'),
@@ -26,4 +27,15 @@ urlpatterns = [
     path('sliders/add/', views.add_slider, name='add_slider'),
     path('sliders/edit/<int:pk>/', views.edit_slider, name='edit_slider'),
     path('sliders/delete/<int:pk>/', views.delete_slider, name='delete_slider'),
+
+    # Category Management
+    
+    path('manage-categories/', views.manage_categories, name='manage_categories'),
+    path('edit-category/<int:category_id>/', views.edit_category, name='edit_category'),
+    path('delete-category/<int:category_id>/', views.delete_category, name='delete_category'),
+    # Report Management
+
+
+    # Setting Management
+  
 ]

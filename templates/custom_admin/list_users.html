@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Manage Users</title>
+    
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        
         .navbar {
             margin-bottom: 20px;
         }
@@ -31,13 +32,26 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'custom_admin:manage_orders' %}">Manage Orders</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'custom_admin:add_product' %}">Add Product</a>
+                </li>
             </ul>
         </div>
     </nav>
-
     <div class="container">
-        <h1 class="mb-4">Manage Users</h1>
 
+        <h1 class="mb-4">Manage Users</h1>
+    
+        <!-- Search Form -->
+        <form method="get" action="{% url 'custom_admin:manage_users' %}" class="mb-4">
+            <div class="input-group">
+                <input type="text" name="q" class="form-control" placeholder="Search by username or email" value="{{ request.GET.q }}">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="submit">Search</button>
+                </div>
+            </div>
+        </form>
+    
         <table class="table table-striped">
             <thead class="thead-dark">
                 <tr>

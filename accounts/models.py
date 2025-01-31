@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from ecommerceapp.models import Cart
+from ecommerceapp.models import Cart, Wishlist
 
 
 
@@ -21,8 +21,11 @@ class UserProfile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    User.add_to_class('get_wishlist_products', lambda user: [wishlist_item.product for wishlist_item in Wishlist.objects.filter(user=user)])
     def __str__(self):
         return f"{self.user.username}'s Profile"
     def get_cart(self):
         return Cart.objects.filter(user=self.user)
     
+
+

@@ -1,0 +1,123 @@
+/* navbar.css */
+
+/* Navbar Blur Effect */
+.wrap-menu-desktop {
+    background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+    backdrop-filter: blur(10px); /* Blur effect */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* Logo Styling */
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #000; /* Black text */
+    text-decoration: none;
+}
+
+.logo:hover {
+    color: #333; /* Darker text on hover */
+}
+
+/* Search Bar Styling */
+.search-form {
+    margin-left: auto; /* Push search bar to the right */
+}
+
+.search-input {
+    background: rgba(255, 255, 255, 0.5); /* Transparent background */
+    border: 1px solid rgba(0, 0, 0, 0.1); /* Light border */
+    border-radius: 20px; /* Rounded corners */
+    padding: 8px 16px;
+    transition: background 0.3s ease;
+}
+
+.search-input:focus {
+    background: rgba(255, 255, 255, 0.8); /* Slightly less transparent on focus */
+    outline: none;
+    box-shadow: none;
+}
+
+.search-button {
+    background: transparent;
+    border: 1px solid rgba(0, 0, 0, 0.1); /* Light border */
+    border-radius: 20px; /* Rounded corners */
+    color: #000; /* Black text */
+    padding: 8px 16px;
+    transition: background 0.3s ease;
+}
+
+.search-button:hover {
+    background: rgba(0, 0, 0, 0.1); /* Light background on hover */
+}
+
+/* Cart and Wishlist Styling */
+.right-menu {
+    margin-left: auto; /* Push cart and wishlist to the right */
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Space between cart and wishlist */
+}
+
+.nav-link {
+    color: #000; /* Black text */
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Space between icon and text */
+}
+
+.nav-link:hover {
+    color: #333; /* Darker text on hover */
+}
+
+/* Badge Styling */
+.badge {
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 10px;
+}
+
+/* Search Bar Styling */
+.search-form {
+    margin-left: auto; /* Push search bar to the right */
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    background: transparent; /* Fully transparent background */
+    border: 1px solid rgba(255, 255, 255, 0.5); /* Light border for visibility */
+    border-radius: 35px; /* Rounded corners */
+    padding: 8px 16px;
+    color: #000; /* Text color */
+    transition: all 0.3s ease;
+}
+
+.search-input::placeholder {
+    color: rgba(0, 0, 0, 0.5); /* Placeholder text color */
+}
+
+.search-input:focus {
+    background: rgba(255, 255, 255, 0.2); /* Slightly less transparent on focus */
+    outline: none;
+    box-shadow: none;
+    border-color: rgba(255, 255, 255, 0.8); /* Brighter border on focus */
+}
+
+.search-button {
+    background: transparent; /* Transparent background */
+    border: 1px solid rgba(255, 255, 255, 0.5); /* Light border */
+    border-radius: 35px; /* Rounded corners */
+    color: #000; /* Text color */
+    padding: 8px 16px;
+    transition: all 0.3s ease; 
+}
+
+.search-button:hover {
+    background: rgba(255, 255, 255, 0.2); /* Slightly less transparent on hover */
+    border-color: rgba(255, 255, 255, 0.8); /* Brighter border on hover */
+}

@@ -1,0 +1,48 @@
+{% extends "custom_admin/base.html" %}
+{% block content %}
+<div class="container mt-2">
+    <h2 class="mb-4">Manage Orders</h2>
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Order ID</th>
+                <th>User</th>
+                <th>Items</th>
+                <th>Amount</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>Phone</th>
+                <th>Order Status</th>
+                <th>Payment Status</th>
+                <th>Cancellation Request</th>
+                <th>Update Status</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.user.username }}</td>
+                <td>{{ order.items_json }}</td>
+                <td>₹{{ order.amount }}</td>
+                <td>{{ order.name }}</td>
+                <td>{{ order.email }}</td>
+                <td>{{ order.address1 }}, {{ order.address2 }}, {{ order.city }}, {{ order.state }}, {{ order.zip_code }}</td>
+                <td>{{ order.phone }}</td>
+                <td>{{ order.order_status|default:"Placed" }}</td>
+                <td>{{ order.payment_status|default:"Pending" }}</td>
+                <td>{{ order.cancellation_request|default:"Not Requested" }}</td>
+                <td>{{ order.update_status|default:"Packed" }}</td>
+                
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="13" class="text-center">No orders found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

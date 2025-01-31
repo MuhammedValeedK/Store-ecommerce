@@ -19,8 +19,8 @@
                 <thead>
                     <tr>
                         <th>Product</th>
+                         <th>Image</th> 
                         <th>Quantity</th>
-                        <th>Change Quantity</th>
                         <th>Price</th>
                         <th>Total</th>
                         <th>Action</th>
@@ -30,12 +30,18 @@
                     {% for item in cart_items %}
                         <tr>
                             <td>{{ item.product.product_name }}</td>
-                            <td>{{ item.quantity }}</td>
+                            <td>
+                               {% if item.product.image %}
+                                    <img src="{{ item.product.image.url }}" alt="{{ item.product.product_name }}" class="img-thumbnail" style="width: 100px; height: auto;">
+                                {% else %}
+                                    <span class="text-muted">No Image</span>
+                                {% endif %}
+                            </td>
                             <td>
                                 <form action="{% url 'update_cart' item.id %}" method="post" style="display:inline;">
                                     {% csrf_token %}
                                     <input type="number" name="quantity" value="{{ item.quantity }}" min="1" style="width: 60px;">
-                                    <button type="submit" class="btn btn-primary btn-sm">Change</button>
+                                    <button type="submit" class="btn btn-primary btn-sm">update</button>
                                 </form>
                             </td>
                             <td>₹{{ item.product.price }}</td>

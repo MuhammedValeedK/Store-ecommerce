@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Manage Products</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}"> <!-- Link to the external CSS file -->
+</head>
+
+<body>
+    <div class="sidebar">
+        <h4 class="text-center py-3">Admin Dashboard</h4>
+        <a href="{% url 'custom_admin:custom_admin_dashboard' %}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a href="{% url 'custom_admin:manage_users' %}"><i class="fas fa-users"></i> Manage Users</a>
+        <a href="{% url 'custom_admin:manage_products' %}"><i class="fas fa-boxes"></i> Manage Products</a>
+        <a href="{% url 'custom_admin:add_product' %}"><i class="fas fa-plus-circle"></i> Add Product</a>
+        <a href="{% url 'custom_admin:manage_orders' %}"><i class="fas fa-clipboard-list"></i> Manage Orders</a>
+        <a href="{% url 'custom_admin:slider_dashboard' %}"><i class="fas fa-image"></i> Manage Sliders</a>
+        <a href="{% url 'custom_admin:manage_categories' %}"><i class="fas fa-th-large"></i> Manage Categories</a>
+    </div>
+
+    <div class="content">
+        <div class="container-fluid">
+            <h1 class="mb-4"> {% block title %} {% endblock title %}</h1>
+
+            {% block content %}
+            
+            {% endblock content %}
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

@@ -1,83 +1,106 @@
-<!DOCTYPE html>
-<html>
+{% extends "custom_admin/base.html" %}  {% block content %}  
+
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Product</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             background-color: #f8f9fa;
-            font-family: Arial, sans-serif;
         }
-        .container {
-            margin-top: 50px;
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px 0px #0000001a;
+
+        .content {
+            margin-top: 0px;
+        }
+
+        .form-container {
             max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
-        h2 {
-            color: #007bff;
-            text-align: center;
-            margin-bottom: 30px;
-        }
+
         .form-group label {
-            color: #495057;
             font-weight: bold;
         }
-        .btn-primary {
+
+        .btn-custom {
             background-color: #007bff;
-            border-color: #007bff;
+            color: #fff;
+            transition: background-color 0.3s ease;
         }
-        .btn-primary:hover {
+
+        .btn-custom:hover {
             background-color: #0056b3;
-            border-color: #0056b3;
+        }
+
+        #subcategory {
+            display: none;  /* Initially hidden */
         }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <h2>Add Product</h2>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="product_name">Product Name</label>
-                <input type="text" class="form-control" id="product_name" name="product_name" required>
-            </div>
-            <div class="form-group">
-                <label for="category">Category</label>
-                <select class="form-control" id="category" name="category" required>
-                    <option value="" disabled selected>Choose a category</option>
-                    {% for key, value in category_choices %}
-                        <option value="{{ key }}">{{ value }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="subcategory">Subcategory</label>
-                <input type="text" class="form-control" id="subcategory" name="subcategory" required>
-            </div>
-            <div class="form-group">
-                <label for="price">Price</label>
-                <input type="number" class="form-control" id="price" name="price" required>
-            </div>
-            <div class="form-group">
-                <label for="desc">Description</label>
-                <textarea class="form-control" id="desc" name="desc" rows="3" required></textarea>
-            </div>
-            <div class="form-group">
-                <label for="image">Product Image</label>
-                <input type="file" class="form-control-file" id="image" name="image" required>
-            </div>
-            <div class="form-group text-center">
-                <button type="submit" class="btn btn-primary">Add Product</button>
-                <a href="{% url 'custom_admin:custom_admin_dashboard' %}" class="btn btn-secondary">Cancel</a>
-            </div>
-        </form>
+    <div class="content">
+        <div class="container form-container">
+            <h1 class="mb-4 text-center">Add Product</h1>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="product_name">Product Name</label>
+                    <input type="text" name="product_name" id="product_name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select name="category" id="category" class="form-control" required>
+                        <option value="" disabled selected>Select a category</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="subcategory">Subcategory</label>
+                    <input type="text" name="subcategory" id="subcategory" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="price">Price</label>
+                    <input type="number" name="price" id="price" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="desc">Description</label>
+                    <textarea name="desc" id="desc" class="form-control" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="image">Image</label>
+                    <input type="file" name="image" id="image" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-custom btn-block">Add Product</button>
+            </form>
+        </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#category').change(function() {
+                if ($(this).val()) {
+                    $('#subcategory').show();
+                } else {
+                    $('#subcategory').hide();
+                }
+            });
+        });
+    </script>
 </body>
+
 </html>
+
+{% endblock %}  ```
+

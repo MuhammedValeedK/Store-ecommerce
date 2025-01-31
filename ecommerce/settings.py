@@ -92,10 +92,15 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'ecommerce',  # Your database name
+        'USER': 'postgres',  # Your database user
+        'PASSWORD': '2701956',  # Your database password
+        'HOST': 'localhost',  # Set to 'localhost' if running on your local machine
+        'PORT': '5432',  # Default PostgreSQL port
     }
 }
 
@@ -174,3 +179,6 @@ EMAIL_HOST_PASSWORD = 'inil pjuj elqv oftl'
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+STRIPE_PUBLIC_KEY = "pk_test_51QmY5BR1qqfRgJOK9yYCYLoELCVDSx7fYwTxS00Qq0zuTZf2Fuq4iPjHCNDuF3pqYHH35lpUFJOgkGqzmApQzejA0062hOov3A"
+STRIPE_SECRET_KEY = "sk_test_51QmY5BR1qqfRgJOKAGPP28afn7NJbYI3WUSBDNZ25faJLfIULfSM4z8Ul4rh2mN46GcmfT4BbuakoHnDF0JjUxHw00KBrDIGFg"

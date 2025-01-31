@@ -28,20 +28,20 @@ class Slider(models.Model):
         ordering = ['order']
 
 
+from django.db import models
 
+class Category(models.Model):
+    name = models.CharField(max_length=100)
+    icon = models.CharField(max_length=50, default="fa-box")  # Default FontAwesome icon
+    description = models.TextField(blank=True, null=True)
+    slug = models.SlugField(unique=True, null=True)
 
+    def __str__(self):
+        return self.name
 
 class Product(models.Model):
-    CATEGORY_CHOICES = [
-        ('Athar', 'Athar'),
-        ('Spray', 'Spray'),
-        ('Oud', 'Oud'),
-        ('Body Spray', 'Body_Spray'),
-        ('others', 'Others'),
-    ]
-    
     product_name = models.CharField(max_length=100)
-    category = models.CharField(max_length=100, choices=CATEGORY_CHOICES, default="others")
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)  # Use ForeignKey
     subcategory = models.CharField(max_length=50, default="")
     price = models.IntegerField(default=0)
     desc = models.CharField(max_length=300)
@@ -49,6 +49,11 @@ class Product(models.Model):
 
     def __str__(self):
         return self.product_name
+
+
+
+
+
 
 class Cart(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
@@ -59,7 +64,16 @@ class Cart(models.Model):
     def __str__(self):
         return f"{self.quantity} x {self.product.name} for {self.user.username}"
 
+class Wishlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Link to the user
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)  # Link to the product
+    added_on = models.DateTimeField(auto_now_add=True)  # Timestamp when the item was added
 
+    class Meta:
+        unique_together = ('user', 'product')  # Ensure each product is added only once per user
+
+    def __str__(self):
+        return f"{self.user.username}'s Wishlist: {self.product.product_name}"
 
 
 
@@ -68,7 +82,8 @@ class Cart(models.Model):
 
 
 class Orders(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)  # Add this line
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     items_json = models.CharField(max_length=5000)
     name = models.CharField(max_length=90)
     amount = models.FloatField(default=0)
@@ -79,16 +94,19 @@ class Orders(models.Model):
     state = models.CharField(max_length=111)
     zip_code = models.CharField(max_length=111)
     phone = models.CharField(max_length=111, default="")
-
+    payment_method = models.CharField(max_length=50, default="COD")  
+    payment_status = models.CharField(max_length=50, default="Pending") 
     def __str__(self):
         return f"Order {self.id} by {self.name}"
 
 
 class OrderUpdate(models.Model):
+    order = models.ForeignKey(Orders, on_delete=models.CASCADE, null=True, blank=True)  # ✅ Allow null values temporarily
     update_id = models.AutoField(primary_key=True)
-    order_id = models.IntegerField(default="")
+    
     update_desc = models.CharField(max_length=5000)
-    delivered=models.BooleanField(default=False)
+    delivered = models.BooleanField(default=False)
+    payment_status = models.CharField(max_length=50, default="Pending")  # New field for payment status
     timestamp = models.DateField(auto_now_add=True)
 
     def __str__(self):

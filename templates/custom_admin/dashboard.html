@@ -1,53 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Manage Products</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        .navbar {
-            margin-bottom: 20px;
-        }
-        .sidebar {
-            height: 100vh;
-            position: fixed;
-            width: 250px;
-            background-color: #343a40;
-            color: white;
-        }
-        .sidebar a {
-            color: white;
-            padding: 15px;
-            display: block;
-            text-decoration: none;
-        }
-        .sidebar a:hover {
-            background-color: #495057;
-        }
-        .content {
-            margin-left: 260px;
-            padding: 20px;
-        }
-        .card {
-            margin-bottom: 20px;
-        }
-    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}"> <!-- Link to the external CSS file -->
 </head>
+
 <body>
     <div class="sidebar">
         <h4 class="text-center py-3">Admin Dashboard</h4>
-        <a href="{% url 'custom_admin:custom_admin_dashboard' %}">Dashboard</a>
-        <a href="{% url 'custom_admin:manage_users' %}">Manage Users</a>
-        <a href="{% url 'custom_admin:manage_products' %}">Manage Products</a>
-        <a href="{% url 'custom_admin:add_product' %}">Add Product</a>
-        <a href="{% url 'custom_admin:manage_orders' %}">Manage Orders</a>
-        <a href="{% url 'custom_admin:slider_dashboard' %}">Manage Sliders</a>
-
-        {% comment %} <a href="{% url 'custom_admin:logout' %}">Logout</a> {% endcomment %}
+        <a href="{% url 'custom_admin:custom_admin_dashboard' %}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a href="{% url 'custom_admin:manage_users' %}"><i class="fas fa-users"></i> Manage Users</a>
+        <a href="{% url 'custom_admin:manage_products' %}"><i class="fas fa-boxes"></i> Manage Products</a>
+        <a href="{% url 'custom_admin:add_product' %}"><i class="fas fa-plus-circle"></i> Add Product</a>
+        <a href="{% url 'custom_admin:manage_orders' %}"><i class="fas fa-clipboard-list"></i> Manage Orders</a>
+        <a href="{% url 'custom_admin:slider_dashboard' %}"><i class="fas fa-image"></i> Manage Sliders</a>
+        <a href="{% url 'custom_admin:manage_categories' %}"><i class="fas fa-th-large"></i> Manage Categories</a>
     </div>
 
     <div class="content">
@@ -56,9 +29,9 @@
 
             <div class="row">
                 <div class="col-md-4">
-                    <div class="card text-white bg-primary" >
+                    <div class="card text-white bg-primary">
                         <div class="card-body">
-                            <h5 class="card-title" >Total Users</h5>
+                            <h5 class="card-title">Total Users</h5>
                             <p class="card-text">{{ total_users }}</p>
                         </div>
                     </div>
@@ -75,24 +48,11 @@
                     <div class="card text-white bg-info">
                         <div class="card-body">
                             <h5 class="card-title">Total Orders</h5>
-                            <p class="card-text">450</p>
+                            <p class="card-text">{{ total_orders }}</p>
                         </div>
                     </div>
                 </div>
             </div>
-
-            {% comment %} <div class="card">
-                <div class="card-header">
-                    Recent Activities
-                </div>
-                <div class="card-body">
-                    <ul class="list-group">
-                        <li class="list-group-item">User John Doe added a new product.</li>
-                        <li class="list-group-item">Order #10234 was shipped.</li>
-                        <li class="list-group-item">New user Jane Smith registered.</li>
-                    </ul>
-                </div>
-            </div> {% endcomment %}
         </div>
     </div>
 
@@ -100,4 +60,5 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>

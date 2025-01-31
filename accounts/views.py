@@ -154,11 +154,13 @@ from .forms import UserUpdateForm, ProfileUpdateForm
 
 @login_required
 def profile(request):
+    # Ensure the user has a UserProfile
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+
     if request.method == 'POST':
         user_form = UserUpdateForm(request.POST, instance=request.user)
-        profile_form = ProfileUpdateForm(request.POST, request.FILES, 
-                                       instance=request.user.userprofile)
-        
+        profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=user_profile)
+
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
@@ -166,7 +168,7 @@ def profile(request):
             return redirect('profile')
     else:
         user_form = UserUpdateForm(instance=request.user)
-        profile_form = ProfileUpdateForm(instance=request.user.userprofile)
+        profile_form = ProfileUpdateForm(instance=user_profile)
 
     context = {
         'user_form': user_form,
