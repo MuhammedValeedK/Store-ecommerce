@@ -92,15 +92,19 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ecommerce',  # Your database name
-        'USER': 'postgres',  # Your database user
-        'PASSWORD': '2701956',  # Your database password
-        'HOST': 'localhost',  # Set to 'localhost' if running on your local machine
-        'PORT': '5432',  # Default PostgreSQL port
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT', cast=int, default=5432),
+    }
+}
+DATABASES = {
+    'default': {
+
     }
 }
 
@@ -170,11 +174,11 @@ MESSAGE_TAGS = {
 
 #sending email
 
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'valeedkrazak@gmail.com'
-EMAIL_HOST_PASSWORD = 'inil pjuj elqv oftl'
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 INTERNAL_IPS = [
     "127.0.0.1",
