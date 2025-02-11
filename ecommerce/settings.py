@@ -102,12 +102,6 @@ DATABASES = {
         'PORT': config('DB_PORT', cast=int, default=5432),
     }
 }
-DATABASES = {
-    'default': {
-
-    }
-}
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
