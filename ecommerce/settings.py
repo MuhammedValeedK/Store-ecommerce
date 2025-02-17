@@ -107,7 +107,7 @@ DATABASES = {
         'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': os.getenv('DB_HOST', default='localhost'),
-        'PORT': os.getenv('DB_PORT', cast=int, default=5432),
+        'PORT': int(os.getenv('DB_PORT', 5432)),
     }
 }
 
@@ -178,8 +178,8 @@ MESSAGE_TAGS = {
 #sending email
 
 EMAIL_HOST = os.getenv('EMAIL_HOST', default='')
-EMAIL_PORT = os.getenv('EMAIL_PORT', cast=int, default=587)
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', cast=bool, default=True)
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', default=587))
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True').lower() in ['true', '1']
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', default='')
 
