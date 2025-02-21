@@ -2,24 +2,16 @@
 {% load custom_filters %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Cart - Movadh Store</title>
-    <!-- Add Bootstrap CSS (optional) -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <div class="container mt-4">
-        <h1>Your Cart</h1>
-        {% if cart_items %}
-            <table class="table">
-                <thead>
+<div class="container mt-4">
+    <h1 class="mb-4 text-center fw-bold text-uppercase">Your Cart</h1>
+
+    {% if cart_items %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle shadow-sm rounded">
+                <thead class="table-dark">
                     <tr>
                         <th>Product</th>
-                         <th>Image</th> 
+                        <th>Image</th>
                         <th>Quantity</th>
                         <th>Price</th>
                         <th>Total</th>
@@ -28,39 +20,60 @@
                 </thead>
                 <tbody>
                     {% for item in cart_items %}
-                        <tr>
-                            <td>{{ item.product.product_name }}</td>
+                        <tr class="bg-white">
+                            <td class="fw-semibold">{{ item.product.product_name }}</td>
                             <td>
-                               {% if item.product.image %}
-                                    <img src="{{ item.product.image.url }}" alt="{{ item.product.product_name }}" class="img-thumbnail" style="width: 100px; height: auto;">
+                                {% if item.product.image %}
+                                    <img src="{{ item.product.image.url }}" alt="{{ item.product.product_name }}" class="img-thumbnail rounded shadow-sm" style="width: 80px; height: auto;">
                                 {% else %}
                                     <span class="text-muted">No Image</span>
                                 {% endif %}
                             </td>
                             <td>
-                                <form action="{% url 'update_cart' item.id %}" method="post" style="display:inline;">
+                                <form action="{% url 'update_cart' item.id %}" method="post" class="d-flex">
                                     {% csrf_token %}
-                                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1" style="width: 60px;">
-                                    <button type="submit" class="btn btn-primary btn-sm">update</button>
+                                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="form-control form-control-sm text-center" style="width: 60px;">
+                                    <button type="submit" class="btn btn-outline-primary btn-sm ms-2">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </button>
                                 </form>
                             </td>
-                            <td>₹{{ item.product.price }}</td>
-                            <td>₹{{ item.total_price }}</td>
+                            <td class="fw-bold">₹{{ item.product.price }}</td>
+                            <td class="fw-bold text-success">₹{{ item.total_price }}</td>
                             <td>
-                                <a href="{% url 'remove_from_cart' item.id %}" class="btn btn-danger btn-sm">Remove</a>
-
+                                <a href="{% url 'remove_from_cart' item.id %}" class="btn btn-danger btn-sm rounded-pill">
+                                    <i class="fas fa-trash-alt"></i> Remove
+                                </a>
                             </td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            <p><strong>Total Price:</strong> ₹{{ total_price }}</p>
-            <a href="{% url 'checkout' %}" class="btn btn-primary">Proceed to Checkout</a>
-            <a href="{% url 'clear_cart' %}" class="btn btn-warning">Clear Cart</a>  <!-- Clear Cart button -->
-        {% else %}
-            <p>Your cart is empty.</p>
-        {% endif %}
-    </div>
-</body>
-</html>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <h4 class="fw-bold">Total Price: <span class="text-primary">₹{{ total_price }}</span></h4>
+            <div>
+                <a href="{% url 'checkout' %}" class="btn btn-success btn-lg rounded-pill">
+                    <i class="fas fa-credit-card"></i> Proceed to Checkout
+                </a>
+                <a href="{% url 'clear_cart' %}" class="btn btn-warning btn-lg rounded-pill">
+                    <i class="fas fa-trash"></i> Clear Cart
+                </a>
+            </div>
+        </div>
+
+    {% else %}
+        <!-- Empty Cart Message -->
+        <div class="alert alert-light text-center py-5">
+            <i class="fas fa-shopping-cart fa-4x text-muted mb-4"></i>
+            <h2 class="display-4 mb-3">Your Cart is Empty!</h2>
+            <p class="lead text-muted mb-4">Looks like you haven't added anything to your cart yet.</p>
+            <a href="{% url 'product_list' %}" class="btn btn-primary btn-lg rounded-pill">
+                <i class="fas fa-store-alt me-2"></i> Continue Shopping
+            </a>
+        </div>
+    {% endif %}
+</div>
 {% endblock content %}
+

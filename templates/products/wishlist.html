@@ -2,41 +2,42 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h1>Your Wishlist</h1>
+    <h1 class="mb-4 text-center fw-bold text-uppercase">Your Wishlist</h1>
+
     <div class="row">
         {% if wishlist_items %}
             {% for item in wishlist_items %}
-                <div class="col-md-4 d-flex align-items-stretch">
-                    <div class="card mb-4 shadow-sm" style="width: 100%; min-height: 350px;">
-                        <img src="{{ item.product.image.url }}" class="card-img-top" alt="{{ item.product.product_name }}" style="height: 200px; object-fit: cover;">
-                        <a href="{% url 'product_detail' item.product.id %}">
-                            <button class="btn btn-dark btn-sm cart"><i class="fa-solid fa-eye"></i></button>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-lg border-0 rounded-3">
+                        <!-- Product Image -->
+                        <img src="{{ item.product.image.url }}" class="card-img-top img-fluid rounded-top" alt="{{ item.product.product_name }}" style="height: 200px; object-fit: cover;">
+                        
+                        <!-- View Product Button -->
+                        <a href="{% url 'product_detail' item.product.id %}" class="btn btn-dark btn-sm position-absolute top-0 end-0 m-2 rounded-pill">
+                            <i class="fa-solid fa-eye"></i>
                         </a>
+
                         <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">{{ item.product.product_name }}</h5>
-                            <p class="card-text">{{ item.product.desc|truncatechars:80 }}</p>
+                            <h5 class="card-title fw-semibold">{{ item.product.product_name }}</h5>
+                            <p class="card-text text-muted">{{ item.product.desc|truncatechars:80 }}</p>
                             <p class="card-text"><strong>Price:</strong> ₹{{ item.product.price }}</p>
-                            <div class="d-flex justify-content-between align-items-center">
+
+                            <div class="mt-auto d-flex justify-content-between align-items-center">
                                 <!-- Add to Cart Button -->
                                 <form action="{% url 'add_to_cart' item.product.id %}" method="post" class="me-2">
                                     {% csrf_token %}
                                     <input type="hidden" name="next" value="{{ request.get_full_path }}">
-                                    <button type="submit" class="btn btn-primary btn-sm">
+                                    <button type="submit" class="btn btn-primary btn-sm rounded-pill">
                                         <i class="fa-solid fa-cart-plus"></i> Add to Cart
                                     </button>
                                 </form>
 
-                                <!-- Toggle Wishlist Button -->
+                                <!-- Remove from Wishlist Button -->
                                 <form action="{% url 'toggle_wishlist' item.product.id %}" method="post">
                                     {% csrf_token %}
                                     <input type="hidden" name="next" value="{{ request.get_full_path }}">
-                                    <button type="submit" class="btn {% if item.product in request.user.get_wishlist_products %}btn-danger{% else %}btn-warning{% endif %} btn-sm">
-                                        <i class="fa fa-heart"></i>
-                                        {% if item.product in request.user.get_wishlist_products %}
-                                            Remove
-                                        {% else %}
-                                            Add
-                                        {% endif %}
+                                    <button type="submit" class="btn btn-danger btn-sm rounded-pill">
+                                        <i class="fa fa-heart"></i> Remove
                                     </button>
                                 </form>
                             </div>
@@ -45,7 +46,15 @@
                 </div>
             {% endfor %}
         {% else %}
-            <p>Your wishlist is empty.</p>
+            <!-- Empty Wishlist Message -->
+            <div class="col-12 text-center">
+                <div class="alert alert-info">
+                    <i class="fa fa-info-circle me-2"></i> Your wishlist is empty. Start adding products you love!
+                </div>
+                <a href="{% url 'product_list' %}" class="btn btn-primary rounded-pill">
+                    <i class="fa fa-shopping-bag me-2"></i> Browse Products
+                </a>
+            </div>
         {% endif %}
     </div>
 </div>
