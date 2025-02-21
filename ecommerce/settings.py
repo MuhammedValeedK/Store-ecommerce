@@ -31,7 +31,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
 # Allowed Hosts
-ALLOWED_HOSTS =['localhost','127.0.0.1','51.20.120.19']
+ALLOWED_HOSTS =['localhost','127.0.0.1','51.20.120.19','movadh.store']
 
 
 # Application definition
