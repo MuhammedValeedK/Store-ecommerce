@@ -113,28 +113,16 @@
 									Collections
 								</a>
 								<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+									{% for category in categories %}
 									<li>
-										<a class="dropdown-item" href="{% url 'category' 'Athar' %}">
-											<i class="fa fa-fire me-2"></i>Athar
+										<a href="{% url 'category' category.slug %}" class="dropdown-item d-flex align-items-center">
+											<i class="fa {{ category.icon }} me-2"></i> {{ category.name }}
 										</a>
 									</li>
-									<li>
-										<a class="dropdown-item" href="{% url 'category' 'Oud' %}">
-											<i class="fa fa-gem me-2"></i>Oud
-										</a>
-									</li>
-									<li>
-										<a class="dropdown-item" href="{% url 'category' 'Spray' %}">
-											<i class="fa fa-spray-can me-2"></i>Spray
-										</a>
-									</li>
-									<li>
-										<a class="dropdown-item" href="{% url 'category' 'Body_Spray' %}">
-											<i class="fa fa-pump-soap me-2"></i>Body Spray
-										</a>
-									</li>
+									{% endfor %}
 								</ul>
 							</li>
+
 							<li>
 								<a href="/contact">Contact</a>
 							</li>
