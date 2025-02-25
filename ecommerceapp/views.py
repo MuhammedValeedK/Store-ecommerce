@@ -15,7 +15,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from itertools import count
 from django.db.models import Q
-
+from accounts.models import UserProfile
 
 
 # @login_required
@@ -193,7 +193,7 @@ def search_products(request):
     if query:
         # Use Q objects to search in multiple fields (e.g., product_name and desc)
         products = Product.objects.filter(
-            Q(product_name__icontains=query) | Q(desc__icontains=query)
+            Q(product_name__icontains=query)
         ).distinct()  # Use distinct() to avoid duplicate results
     else:
         products = Product.objects.none()  # Return an empty queryset if no query is provided
@@ -297,8 +297,15 @@ def checkout(request):
         cart_items.delete()
 
         return render(request, 'users/order_placed.html', { 'order': order})
-
-    return render(request, 'checkout.html', {'cart_items': cart_items, 'total_amount': total_amount})
+    user = request.user
+    user_profile, created = UserProfile.objects.get_or_create(user=user)
+    context = {
+        'user': user,
+        'user_profile': user_profile,
+        'cart_items': cart_items,
+        'total_amount': total_amount
+    }
+    return render(request, 'checkout.html', context)
 
 def checkout_success(request):
     session_id = request.GET.get('session_id')

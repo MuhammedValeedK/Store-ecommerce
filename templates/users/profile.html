@@ -4,11 +4,22 @@
 {% block content %}
 <div class="container mt-4">
     <div class="row">
+        <!-- Profile Details -->
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
                     <h2>Profile</h2>
                 </div>
+                <div class="card-body d-flex align-items-center">
+                    <img src="{{ user.userprofile.profile_picture.url }}" class="rounded-3 me-3" width="120">
+                    <div>
+                        <p><strong>Username:</strong> {{ user.username }}</p>
+                        <p><strong>Email:</strong> {{ user.email }}</p>
+                        <p><strong>Phone:</strong> {{ user.userprofile.phone_number }}</p>
+                        <p><strong>Address:</strong> {{ user.userprofile.address }}</p>
+                    </div>
+                </div>
+
                 <div class="card-body">
                     <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
@@ -23,18 +34,61 @@
                 </div>
             </div>
         </div>
+
+        <!-- Wishlist & Order Summary (Right Side) -->
         <div class="col-md-4">
-            <div class="card">
+            <!-- Wishlist -->
+            <div class="card mb-3">
                 <div class="card-header">
-                    <h4>Profile Picture</h4>
+                    <h4>Wishlist</h4>
                 </div>
                 <div class="card-body text-center">
-                    {% if user.userprofile.profile_picture %}
-                        <img src="{{ user.userprofile.profile_picture.url }}" class="rounded-circle" width="150">
-                    {% else %}
-                        <img src="/static/default_profile.png" class="rounded-circle" width="150">
-                    {% endif %}
+                    <a class="btn btn-danger" href="{% url 'view_wishlist' %}">
+                        <i class="fa fa-heart"></i> View Wishlist
+                    </a>
                 </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="card order-summary-box">
+                <div class="card-header">
+                    <h4>Order Summary</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Items</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td>{{ order.id }}</td>
+                                <td>
+                                    {% for item in order.items %}
+                                        <strong>{{ item.product_name }}</strong> (Qty: {{ item.quantity }})<br>
+                                    {% endfor %}
+                                </td>
+                                <td>₹{{ order.amount }}</td>
+                                <td>{{ order.order_status|default:"Placed" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center">No orders found</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Logout Button -->
+            <div class="mt-3 text-center">
+                <a href="{% url 'logout' %}" class="btn btn-warning">Logout</a>
             </div>
         </div>
     </div>

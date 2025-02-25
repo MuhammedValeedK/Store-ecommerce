@@ -13,6 +13,8 @@ from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
 from .models import UserProfile
+from ecommerceapp.models import Orders, OrderUpdate, Wishlist
+import json
 # Create your views here.
 
 
@@ -162,10 +164,11 @@ def profile(request):
         profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=user_profile)
 
         if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
-            messages.success(request, 'Your profile has been updated successfully!')
-            return redirect('profile')
+            if user_form.has_changed() or profile_form.has_changed():
+                user_form.save()
+                profile_form.save()
+                messages.success(request, 'Your profile has been updated successfully!')
+                return redirect('profile')
     else:
         user_form = UserUpdateForm(instance=request.user)
         profile_form = ProfileUpdateForm(instance=user_profile)
@@ -173,5 +176,20 @@ def profile(request):
     context = {
         'user_form': user_form,
         'profile_form': profile_form
+    }
+      # Fetch user orders and wishlist
+    orders = Orders.objects.filter(user=request.user).order_by('-id')
+    wishlist_items = Wishlist.objects.filter(user=request.user)
+    for order in orders:
+        try:
+            order.items = json.loads(order.items_json)  # ✅ Parse JSON safely
+        except json.JSONDecodeError:
+            order.items = []  # If JSON is invalid, assign an empty list
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form,
+        'user_profile': user_profile,
+        'orders': orders,
+        'wishlist_items': wishlist_items
     }
     return render(request, 'users/profile.html', context)

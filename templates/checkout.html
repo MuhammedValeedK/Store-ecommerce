@@ -61,46 +61,41 @@
                             <!-- Name -->
                             <div class="col-md-6 mb-3">
                                 <label for="name" class="form-label">Full Name</label>
-                                <input type="text" class="form-control" id="name" name="name" required>
+                                <input type="text" class="form-control" id="name" name="name" value="{{ user.first_name }}" required>
                             </div>
 
                             <!-- Email -->
                             <div class="col-md-6 mb-3">
                                 <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" required>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
                             </div>
-                        </div>
 
-                        <!-- Address -->
-                        <div class="mb-3">
-                            <label for="address1" class="form-label">Address Line 1</label>
-                            <input type="text" class="form-control" id="address1" name="address1" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="address2" class="form-label">Address Line 2 (Optional)</label>
-                            <input type="text" class="form-control" id="address2" name="address2">
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label for="city" class="form-label">City</label>
-                                <input type="text" class="form-control" id="city" name="city" required>
+                            <!-- Address -->
+                            <div class="mb-3">
+                                <label for="address1" class="form-label">Address Line 1</label>
+                                <input type="text" class="form-control" id="address1" name="address1" value="{{ user_profile.address }}" required>
                             </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="state" class="form-label">State</label>
-                                <input type="text" class="form-control" id="state" name="state" required>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="zip_code" class="form-label">Zip Code</label>
-                                <input type="text" class="form-control" id="zip_code" name="zip_code" required>
-                            </div>
-                        </div>
 
-                        <!-- Phone -->
-                        <div class="mb-3">
-                            <label for="phone" class="form-label">Phone Number</label>
-                            <input type="text" class="form-control" id="phone" name="phone" required>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="city" class="form-label">City</label>
+                                    <input type="text" class="form-control" id="city" name="city" value="{{ user_profile.city }}" required>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="state" class="form-label">State</label>
+                                    <input type="text" class="form-control" id="state" name="state" value="{{ user_profile.state }}" required>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="zip_code" class="form-label">Zip Code</label>
+                                    <input type="text" class="form-control" id="zip_code" name="zip_code" value="{{ user_profile.postal_code }}" required>
+                                </div>
+                            </div>
+
+                            <!-- Phone -->
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Phone Number</label>
+                                <input type="text" class="form-control" id="phone" name="phone" value="{{ user_profile.phone_number }}" required>
+                            </div>
                         </div>
 
                         <!-- Payment Method -->
