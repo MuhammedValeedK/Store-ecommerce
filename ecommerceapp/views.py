@@ -57,9 +57,7 @@ class category_view(View):
         return render(request, "products/category.html", context)
 
 
-def category_list(request):
-    categories = Category.objects.all()  # Fetch all categories
-    return render(request, 'base.html', {'categories': categories})
+
 
 
 def contact(request):
