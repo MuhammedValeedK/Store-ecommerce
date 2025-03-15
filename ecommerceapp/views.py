@@ -4,12 +4,12 @@ from django.contrib.auth.decorators import login_required
 from ecommerceapp.models import Contact,Product,OrderUpdate,Orders, Slider, Cart, Wishlist, Category
 from django.contrib import messages
 from math import ceil
-# from ecommerceapp import keys
+
 from django.conf import settings
-# MERCHANT_KEY=keys.MK
+
 import json
 from django.views.decorators.csrf import  csrf_exempt
-# from PayTm import Checksum
+
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
